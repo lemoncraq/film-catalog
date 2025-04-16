@@ -1,0 +1,50 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [header]="film?.id ? 'Редактировать фильм' : 'Добавить фильм'"
+  [style]="{ width: '500px' }"
+  (onHide)="onClose()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div>
+      <label for="title">Название</label>
+      <input pInputText id="title" formControlName="title"/>
+    </div>
+
+    <div>
+      <label for="genre">Жанр</label>
+      <input pInputText id="genre" formControlName="genre"/>
+    </div>
+
+    <div>
+      <label for="year">Год выпуска</label>
+      <input pInputText id="year" formControlName="year"/>
+    </div>
+
+    <div>
+      <label for="director">Режиссёр</label>
+      <input pInputText id="director" formControlName="director"/>
+    </div>
+
+    <div>
+      <label for="actors">Актёры (через запятую)</label>
+      <input pInputText id="actors" formControlName="actors"/>
+    </div>
+
+    <div>
+      <label for="annotation">Аннотация</label>
+      <textarea pInputTextarea id="annotation" formControlName="annotation" rows="3"></textarea>
+    </div>
+
+    <div>
+      <label for="image">Изображение (URL)</label>
+      <input pInputText id="image" formControlName="image"/>
+    </div>
+
+    <div>
+      <button pButton type="submit" label="Сохранить" [disabled]="form.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

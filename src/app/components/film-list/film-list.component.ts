@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FilmService } from '../../services/film.service';
-import { Film } from '../../models/film.model';
+import {Component, OnInit} from '@angular/core';
+import {FilmService} from '../../services/film.service';
+import {Film} from '../../models/film.model';
+import {MenuItem} from "primeng/api";
 
 @Component({
   selector: 'app-film-list',
@@ -10,7 +11,8 @@ import { Film } from '../../models/film.model';
 export class FilmListComponent implements OnInit {
   films: Film[] = [];
 
-  constructor(private filmService: FilmService) { }
+  constructor(private filmService: FilmService) {
+  }
 
   ngOnInit(): void {
     this.loadFilms();
@@ -30,14 +32,40 @@ export class FilmListComponent implements OnInit {
     });
   }
 
+  showForm = false;
+  selectedFilm?: Film;
+
   onAddFilm() {
-    // Открытие формы в диалоге, либо переход на страницу добавления
-    console.log('Добавить фильм');
+    this.selectedFilm = undefined;
+    this.showForm = true;
   }
 
   onEditFilm(film: Film) {
-    // Открытие формы редактирования
-    console.log('Редактировать фильм:', film);
+    this.selectedFilm = {...film}; // копия, чтобы не портить оригинал
+    this.showForm = true;
   }
 
+  onSave(film: Film) {
+    if (film.id) {
+      this.filmService.updateFilm(film).subscribe(() => this.loadFilms());
+    } else {
+      this.filmService.addFilm(film).subscribe(() => this.loadFilms());
+    }
+    this.showForm = false;
+  }
+
+  activeFilm!: Film;
+
+  menuItems: MenuItem[] = [
+    {
+      label: 'Редактировать',
+      icon: 'pi pi-pencil',
+      command: () => this.onEditFilm(this.activeFilm)
+    },
+    {
+      label: 'Удалить',
+      icon: 'pi pi-trash',
+      command: () => this.deleteFilm(this.activeFilm.id!)
+    }
+  ];
 }

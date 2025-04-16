@@ -1,32 +1,46 @@
-<div class="film-list p-4">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-2xl font-semibold">Каталог фильмов</h2>
-    <button pButton label="Добавить фильм" icon="pi pi-plus" (click)="onAddFilm()" class="p-button-success"></button>
+<div class="p-4">
+  <div class="mb-4">
+    <h2>Каталог фильмов</h2>
+    <button pButton label="Добавить фильм" icon="pi pi-plus" class="p-button-success" (click)="onAddFilm()"></button>
   </div>
 
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-    <div *ngFor="let film of films" class="p-card">
-      <div class="p-card-body">
-        <div class="flex gap-4">
-          <img width="200px" [src]="film.image || 'https://via.placeholder.com/150x220?text=No+Image'" alt="film image"
-               class="w-36 h-auto rounded shadow" />
+  <div>
+    <div *ngFor="let film of films" class="mb-4">
+      <p-card [header]="film.title" [subheader]="film.genre + (film.year ? ' | ' + film.year : '')">
+        <div>
+          <img
+            *ngIf="film.image"
+            [src]="film.image"
+            alt="film image"
+            style="width: 100px; object-fit: cover; border-radius: 6px;"
+          />
 
-          <div class="flex flex-col justify-between flex-1">
-            <div>
-              <h3 class="text-xl font-bold mb-1">{{ film.title }}</h3>
-              <p class="text-sm text-gray-500">{{ film.genre }} | {{ film.year }}</p>
-              <p class="text-sm mt-1"><strong>Режиссёр:</strong> {{ film.director }}</p>
-              <p class="text-sm"><strong>Актёры:</strong> {{ film.actors.join(', ') }}</p>
-              <p class="text-sm mt-2 italic text-gray-700">{{ film.annotation }}</p>
-            </div>
-
-            <div class="flex justify-end gap-2 mt-3">
-              <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-warning" (click)="onEditFilm(film)"></button>
-              <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteFilm(film.id!)"></button>
-            </div>
+          <div>
+            <p><strong>Режиссёр:</strong> {{ film.director }}</p>
+            <p><strong>Актёры:</strong> {{ film.actors.join(', ') }}</p>
+            <p *ngIf="film.annotation">{{ film.annotation }}</p>
           </div>
         </div>
-      </div>
+
+        <ng-template pTemplate="footer">
+          <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+          <button
+            pButton
+            icon="pi pi-ellipsis-v"
+            class="p-button-rounded p-button-text p-button-plain"
+            (click)="activeFilm = film; menu.toggle($event)"
+            title="Действия"
+          ></button>
+        </ng-template>
+      </p-card>
     </div>
   </div>
 </div>
+
+<!-- Диалог с формой добавления/редактирования -->
+<app-film-form
+  [visible]="showForm"
+  [film]="selectedFilm"
+  (save)="onSave($event)"
+  (close)="showForm = false"
+></app-film-form>
