@@ -5,8 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build:ssr": "ng build && ng run film-catalog:server",
+    "serve:ssr": "node dist/film-catalog/server/main.js",
+    "dev:client": "ng serve --proxy-config proxy.conf.json",
+    "dev:server": "ng run film-catalog:server && nodemon dist/film-catalog/server/main.js",
+    "start:dev": "concurrently \"npm run dev:client\" \"npm run dev:server\""
   },
   "private": true,
   "dependencies": {
@@ -17,7 +20,12 @@
     "@angular/forms": "^16.2.0",
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
+    "@angular/platform-server": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@nguniversal/express-engine": "^16.2.0",
+    "express": "^4.15.2",
+    "primeicons": "^7.0.0",
+    "primeng": "^16.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
@@ -26,13 +34,18 @@
     "@angular-devkit/build-angular": "^16.2.5",
     "@angular/cli": "^16.2.5",
     "@angular/compiler-cli": "^16.2.0",
+    "@nguniversal/builders": "^16.2.0",
+    "@types/express": "^4.17.0",
     "@types/jasmine": "~4.3.0",
+    "@types/node": "^16.11.7",
+    "concurrently": "^9.1.2",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "nodemon": "^3.1.9",
     "typescript": "~5.1.3"
   }
 }
