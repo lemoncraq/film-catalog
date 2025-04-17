@@ -4,15 +4,84 @@
     <button pButton label="Добавить фильм" icon="pi pi-plus" class="p-button-success" (click)="onAddFilm()"></button>
   </div>
 
-  <div>
+  <div class="row-gap-2 grid mb-4">
+    <div class="col-12 md-4">
+      <input
+        pInputText
+        placeholder="Поиск (min 3 символа)"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        class="w-12"
+      />
+    </div>
+    <div class="col-6 md-2">
+      <p-dropdown
+        [options]="availableGenres"
+        placeholder="Жанр"
+        [(ngModel)]="selectedGenre"
+        (onChange)="onGenreChange()"
+        class="p-fluid"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
+    <div class="col-6 md-2">
+      <p-dropdown
+        [options]="availableYears"
+        placeholder="Год"
+        [(ngModel)]="selectedYear"
+        (onChange)="onYearChange()"
+        class="p-fluid"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
+    <div class="col-6 md-2">
+      <p-calendar
+        [(ngModel)]="dateAddedRange"
+        selectionMode="range"
+        placeholder="Дата добавления"
+        (onSelect)="onDateAddedChange()"
+        class="p-fluid"
+        [showClear]="true"
+        [touchUI]="true"
+        (onClear)="onDateAddedChange()"
+      ></p-calendar>
+    </div>
+    <div class="col-6 md-2">
+      <p-calendar
+        [(ngModel)]="updatedDateRange"
+        selectionMode="range"
+        placeholder="Дата обновления"
+        (onSelect)="onDateUpdatedChange()"
+        class="p-fluid"
+        [showClear]="true"
+        [touchUI]="true"
+        (onClear)="onDateAddedChange()"
+      ></p-calendar>
+    </div>
+  </div>
+
+
+  <div class="mt-4">
     <div *ngFor="let film of films" class="mb-4">
-      <p-card [header]="film.title" [subheader]="film.genre + (film.year ? ' | ' + film.year : '')">
+      <p-card [header]="film.title" [subheader]="film.genre + (film.year ? ' | ' + film.year : '')" class="custom-card">
+        <ng-template pTemplate="title">
+            <div>
+              <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+              <button
+                pButton
+                icon="pi pi-ellipsis-v"
+                class="p-button-rounded p-button-text p-button-plain"
+                (click)="activeFilm = film; menu.toggle($event)"
+                title="Действия"
+              ></button>
+            </div>
+        </ng-template>
         <div>
           <img
             *ngIf="film.image"
             [src]="film.image"
             alt="film image"
-            style="width: 100px; object-fit: cover; border-radius: 6px;"
+            style="width: 120px; object-fit: cover; border-radius: 6px;"
           />
 
           <div>
@@ -21,17 +90,6 @@
             <p *ngIf="film.annotation">{{ film.annotation }}</p>
           </div>
         </div>
-
-        <ng-template pTemplate="footer">
-          <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
-          <button
-            pButton
-            icon="pi pi-ellipsis-v"
-            class="p-button-rounded p-button-text p-button-plain"
-            (click)="activeFilm = film; menu.toggle($event)"
-            title="Действия"
-          ></button>
-        </ng-template>
       </p-card>
     </div>
   </div>

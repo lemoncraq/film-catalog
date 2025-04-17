@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {FilmService} from '../../services/film.service';
+import {FilmQuery, FilmService} from '../../services/film.service';
 import {Film} from '../../models/film.model';
-import {MenuItem} from "primeng/api";
+import {MenuItem, SelectItem} from "primeng/api";
 
 @Component({
   selector: 'app-film-list',
@@ -11,18 +11,70 @@ import {MenuItem} from "primeng/api";
 export class FilmListComponent implements OnInit {
   films: Film[] = [];
 
+  // UI-модели фильтра
+  searchTerm: string = '';
+  selectedGenre?: string;
+  availableGenres: SelectItem[] = [];
+  selectedYear?: number;
+  availableYears: SelectItem[] = [];
+  dateAddedRange: Date[] = [];
+  updatedDateRange: Date[] = [];
+
   constructor(private filmService: FilmService) {
   }
 
   ngOnInit(): void {
+    // Изначально загрузим все фильмы и выполним один запрос для списка жанров/годов
+    this.filmService.getFilms().subscribe(all => {
+      this.availableGenres = Array.from(new Set(all.map(f => f.genre)))
+        .map(g => ({label: g, value: g}));
+      this.availableYears = Array.from(new Set(all.map(f => f.year).filter(y => y)))
+        .map(y => ({label: y!.toString(), value: y!}));
+      // Затем сразу подгрузим первый раз с пустыми фильтрами
+      this.loadFilms();
+    });
+  }
+
+
+  loadFilms(): void {
+    const q: FilmQuery = {};
+
+    if (this.selectedGenre) q.genre = this.selectedGenre;
+    if (this.selectedYear) q.year = this.selectedYear;
+    if (this.dateAddedRange?.length === 2 && this.dateAddedRange[0] && this.dateAddedRange[1]) {
+      q.addedFrom = this.dateAddedRange[0];
+      q.addedTo = this.dateAddedRange[1];
+    }
+    if (this.updatedDateRange?.length === 2 && this.updatedDateRange[0] && this.updatedDateRange[1]) {
+      q.updatedFrom = this.updatedDateRange[0];
+      q.updatedTo = this.updatedDateRange[1];
+    }
+    if (this.searchTerm.trim().length >= 3) {
+      q.search = this.searchTerm.trim();
+    }
+
+    this.filmService.getFilms(q).subscribe(f => this.films = f);
+  }
+
+  // Вызвать loadFilms() при любых изменениях в UI
+  onSearchChange() {
     this.loadFilms();
   }
 
-  loadFilms() {
-    this.filmService.getFilms().subscribe({
-      next: (data) => this.films = data,
-      error: (err) => console.error(err)
-    });
+  onGenreChange() {
+    this.loadFilms();
+  }
+
+  onYearChange() {
+    this.loadFilms();
+  }
+
+  onDateAddedChange() {
+    this.loadFilms();
+  }
+
+  onDateUpdatedChange() {
+    this.loadFilms();
   }
 
   deleteFilm(id: number) {

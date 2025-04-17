@@ -9,13 +9,15 @@ import { FilmListComponent } from './components/film-list/film-list.component';
 import {TableModule} from "primeng/table";
 import {ButtonModule} from "primeng/button";
 import {FilmFormComponent} from "./components/film-form/film-form.component";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DialogModule} from "primeng/dialog";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CardModule} from "primeng/card";
 import {InputTextModule} from "primeng/inputtext";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {MenuModule} from "primeng/menu";
+import {CalendarModule} from "primeng/calendar";
+import {DropdownModule} from "primeng/dropdown";
 
 @NgModule({
   declarations: [
@@ -35,7 +37,10 @@ import {MenuModule} from "primeng/menu";
     DialogModule,
     CardModule,
     InputTextModule,
-    InputTextareaModule
+    InputTextareaModule,
+    CalendarModule,
+    FormsModule,
+    DropdownModule
   ],
   providers: [],
   bootstrap: [AppComponent]

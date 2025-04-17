@@ -55,10 +55,56 @@ export function app(): express.Express {
 
   const apiPrefix = '/api/films';
 
-// Получение всех фильмов
+
+// GET /api/films?genre=&year=&search=&addedFrom=&addedTo=&updatedFrom=&updatedTo=
   server.get(apiPrefix, (req: Request, res: Response): void => {
-    res.json(films);
+    let result = films.slice();
+
+    const { genre, year, search, addedFrom, addedTo, updatedFrom, updatedTo } = req.query;
+
+    // Фильтрация по жанру
+    if (genre && typeof genre === 'string') {
+      result = result.filter(f => f.genre === genre);
+    }
+
+    // Фильтрация по году
+    if (year && !isNaN(+year)) {
+      const y = +year;
+      result = result.filter(f => f.year === y);
+    }
+
+    // Фильтрация по диапазону дат добавления
+    if (addedFrom && addedTo) {
+      const from = new Date(addedFrom as string);
+      const to   = new Date(addedTo   as string);
+      result = result.filter(f => f.createdAt >= from && f.createdAt <= to);
+    }
+
+    // Фильтрация по диапазону дат обновления
+    if (updatedFrom && updatedTo) {
+      const from = new Date(updatedFrom as string);
+      const to   = new Date(updatedTo   as string);
+      result = result.filter(f => f.updatedAt >= from && f.updatedAt <= to);
+    }
+
+    // Поиск (регистронезависимо, по части слова или фразы, от 3 символов)
+    if (search && typeof search === 'string' && search.trim().length >= 3) {
+      const term = search.trim().toLowerCase();
+      result = result.filter(f => {
+        const haystack = [
+          f.title,
+          f.director,
+          f.annotation || '',
+          ...f.actors
+        ].join(' ').toLowerCase();
+
+        return haystack.includes(term);
+      });
+    }
+
+    res.json(result);
   });
+
 
 // Добавление фильма
   server.post(apiPrefix, (req: Request, res: Response): void => {
@@ -143,9 +189,10 @@ export function app(): express.Express {
 
 function run(): void {
   const port = process.env['PORT'] || 4000;
+  const host = '0.0.0.0';
   const server = app();
-  server.listen(port, () => {
-    console.log(`✅ Node Express server listening on http://localhost:${port}`);
+  server.listen(port as number, host, () => {
+    console.log(`✅ Server running on http://${host}:${port}`);
   });
 }
 
