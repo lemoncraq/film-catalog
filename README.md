@@ -1,27 +1,162 @@
-# FilmCatalog
+# Film Catalog Application
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
+Application built with Angular 16.2.0 and Angular Universal for server-side rendering (SSR), featuring an in-memory Express API, PrimeNG UI components, and PrimeFlex CSS utilities. This app allows you to manage a catalog of films with full CRUD operations, search, filtering, sorting, and a responsive list view.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- **Server-Side Rendering** with Angular Universal (Express)
+- **In-Memory Backend API**
+  - `GET /api/films` (with query-based filtering, search, and sorting)
+  - `POST /api/films` (create)
+  - `PUT /api/films/:id` (update)
+  - `DELETE /api/films/:id` (delete)
+- **Responsive List View**
+  - Displays film cards with image, title, genre, year, director, actors, annotation
+  - Action menu (⋮) per card: Edit / Delete
+- **Modal Dialog** for adding and editing films (PrimeNG `p-dialog` + Reactive Forms)
+- **Search** by title, director, actors, annotation (case-insensitive, min 3 chars)
+- **Filtering** by genre, year, date added, date updated
+- **Sorting** by title (A→Z, Z→A) and year (asc/desc)
+- **Reset** button to clear search, filters, and sorting
+- **Responsive Layout** using PrimeFlex grid and components
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## Tech Stack
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **Frontend:** Angular 16.2.0, PrimeNG, PrimeIcons, PrimeFlex, Reactive Forms
+- **SSR / Backend:** Angular Universal (Express), Node.js
+- **Styling:** SCSS, PrimeFlex utilities
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Prerequisites
 
-## Running end-to-end tests
+- [Node.js](https://nodejs.org/) ≥ 16
+- [npm](https://www.npmjs.com/) ≥ 8
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## Installation & Setup
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```bash
+# Clone the repository
+git clone <repository-url>
+cd film-catalog
+
+# Install dependencies
+npm install
+```
+
+### Development
+
+- **Frontend only** (SPA + live-reload, proxy for API):
+  ```bash
+  npm run dev:client
+  ```
+  Opens at `http://localhost:4200`, proxies `/api` to `http://localhost:4000`.
+
+- **Backend only** (SSR build + in-memory API + hot-reload):
+  ```bash
+  npm run dev:server
+  ```
+  Listens on `http://0.0.0.0:4000` with auto rebuild on changes.
+
+- **Full stack** (Frontend + Backend concurrently):
+  ```bash
+  npm run start:dev
+  ```
+
+### Production / SSR
+
+```bash
+# Build both browser and server bundles
+npm run build:ssr
+
+# Serve the SSR app (Node.js)
+npm run serve:ssr
+```
+
+Access the application and API at `http://localhost:4000`.
+
+---
+
+## API Documentation
+
+Base URL: `/api/films`
+
+### GET /api/films
+
+Query parameters (all optional):
+- `search` (string, ≥ 3 chars)
+- `genre` (string)
+- `year` (number)
+- `addedFrom`, `addedTo` (ISO date strings)
+- `updatedFrom`, `updatedTo` (ISO date strings)
+- `sortField` (`title` \| `year`)
+- `sortOrder` (`asc` \| `desc`)
+
+Returns JSON array of films matching filters + search + sorted.
+
+### POST /api/films
+
+Create a new film. Body JSON:
+```json
+{
+  "title": "string",
+  "genre": "string",
+  "year": 2021,
+  "director": "string",
+  "actors": ["actor1", "actor2"],
+  "annotation": "string",
+  "image": "https://..."
+}
+```
+
+### PUT /api/films/:id
+
+Update existing film fields. Body JSON same as POST (all fields optional).
+
+### DELETE /api/films/:id
+
+Delete a film by ID.
+
+---
+
+## Project Structure
+
+```
+film-catalog/
+├── dist/                   # Build output
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   ├── film-list/
+│   │   │   └── film-form/
+│   │   ├── models/
+│   │   │   └── film.model.ts
+│   │   ├── services/
+│   │   │   └── film.service.ts
+│   │   ├── app.module.ts
+│   │   ├── app.server.module.ts
+│   │   └── tokens/
+│   │       └── base-url.token.ts
+│   ├── main.ts
+│   ├── main.server.ts
+│   └── server.ts           # Express + API + SSR setup
+├── proxy.conf.json         # API proxy for ng serve
+├── angular.json
+├── package.json
+└── README.md               # ← this file
+```
+
+---
+
+## Notes
+
+- Data is stored **in-memory**; restart the server to reset.
+- For production, replace in-memory storage with a real database (e.g., MongoDB, PostgreSQL).
+
+
