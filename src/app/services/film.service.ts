@@ -11,6 +11,8 @@ export interface FilmQuery {
   updatedFrom?: Date;
   updatedTo?: Date;
   search?: string;
+  sortField?: 'title' | 'year';
+  sortOrder?: 'asc' | 'desc';
 }
 
 @Injectable({
@@ -33,6 +35,10 @@ export class FilmService {
       if (query.updatedFrom)params = params.set('updatedFrom', query.updatedFrom.toISOString());
       if (query.updatedTo)  params = params.set('updatedTo', query.updatedTo.toISOString());
       if (query.search)     params = params.set('search', query.search);
+      if (query.sortField) {
+        params = params.set('sortField', query.sortField);
+        params = params.set('sortOrder', query.sortOrder || 'asc');
+      }
     }
 
     return this.http.get<Film[]>(this.apiUrl, { params });

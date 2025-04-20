@@ -14,7 +14,7 @@
         class="w-12"
       />
     </div>
-    <div class="col-6 md-2">
+    <div class="col-6 ">
       <p-dropdown
         [options]="availableGenres"
         placeholder="Жанр"
@@ -24,7 +24,7 @@
         [showClear]="true"
       ></p-dropdown>
     </div>
-    <div class="col-6 md-2">
+    <div class="col-6 ">
       <p-dropdown
         [options]="availableYears"
         placeholder="Год"
@@ -34,7 +34,7 @@
         [showClear]="true"
       ></p-dropdown>
     </div>
-    <div class="col-6 md-2">
+    <div class="col-6 ">
       <p-calendar
         [(ngModel)]="dateAddedRange"
         selectionMode="range"
@@ -46,7 +46,7 @@
         (onClear)="onDateAddedChange()"
       ></p-calendar>
     </div>
-    <div class="col-6 md-2">
+    <div class="col-6 ">
       <p-calendar
         [(ngModel)]="updatedDateRange"
         selectionMode="range"
@@ -57,6 +57,26 @@
         [touchUI]="true"
         (onClear)="onDateAddedChange()"
       ></p-calendar>
+    </div>
+    <div class="col-6 ">
+      <p-dropdown
+        [options]="sortOptions"
+        placeholder="Сортировка"
+        [(ngModel)]="selectedSort"
+        (onChange)="onSortChange()"
+        class="p-fluid"
+        [showClear]="true">
+      </p-dropdown>
+    </div>
+    <div class="col-6 ">
+      <button
+        pButton
+        type="button"
+        label="Сбросить"
+        icon="pi pi-filter-slash"
+        class="p-button-outlined p-button-secondary p-fluid"
+        (click)="resetFilters()"
+      ></button>
     </div>
   </div>
 

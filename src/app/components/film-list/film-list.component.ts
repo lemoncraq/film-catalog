@@ -6,7 +6,6 @@ import {MenuItem, SelectItem} from "primeng/api";
 @Component({
   selector: 'app-film-list',
   templateUrl: './film-list.component.html'
-  // styleUrls: ['./film-list.component.scss']
 })
 export class FilmListComponent implements OnInit {
   films: Film[] = [];
@@ -19,6 +18,14 @@ export class FilmListComponent implements OnInit {
   availableYears: SelectItem[] = [];
   dateAddedRange: Date[] = [];
   updatedDateRange: Date[] = [];
+  // выбор сортировки
+  sortOptions: SelectItem[] = [
+    {label: 'Название A → Z', value: 'title_asc'},
+    {label: 'Название Z → A', value: 'title_desc'},
+    {label: 'Год по возрастанию', value: 'year_asc'},
+    {label: 'Год по убыванию', value: 'year_desc'}
+  ];
+  selectedSort: string | null = null;
 
   constructor(private filmService: FilmService) {
   }
@@ -52,6 +59,12 @@ export class FilmListComponent implements OnInit {
     if (this.searchTerm.trim().length >= 3) {
       q.search = this.searchTerm.trim();
     }
+    // сортировка
+    if (this.selectedSort) {
+      const [field, order] = this.selectedSort.split('_') as ['title' | 'year', 'asc' | 'desc'];
+      q.sortField = field;
+      q.sortOrder = order;
+    }
 
     this.filmService.getFilms(q).subscribe(f => this.films = f);
   }
@@ -74,6 +87,22 @@ export class FilmListComponent implements OnInit {
   }
 
   onDateUpdatedChange() {
+    this.loadFilms();
+  }
+
+  onSortChange(): void {
+    this.loadFilms();
+  }
+
+  /** Сброс всех фильтров, поиска и сортировки */
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedGenre = undefined;
+    this.selectedYear = undefined;
+    this.dateAddedRange = [];
+    this.updatedDateRange = [];
+    this.selectedSort = null;
+
     this.loadFilms();
   }
 

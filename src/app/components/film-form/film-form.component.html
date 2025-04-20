@@ -8,37 +8,37 @@
   (onHide)="onClose()"
 >
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-fluid">
-    <div>
+    <div class="mb-2">
       <label for="title">Название</label>
       <input pInputText id="title" formControlName="title"/>
     </div>
 
-    <div>
+    <div class="mb-2">
       <label for="genre">Жанр</label>
       <input pInputText id="genre" formControlName="genre"/>
     </div>
 
-    <div>
+    <div class="mb-2">
       <label for="year">Год выпуска</label>
       <input pInputText id="year" formControlName="year"/>
     </div>
 
-    <div>
+    <div class="mb-2">
       <label for="director">Режиссёр</label>
       <input pInputText id="director" formControlName="director"/>
     </div>
 
-    <div>
+    <div class="mb-2">
       <label for="actors">Актёры (через запятую)</label>
       <input pInputText id="actors" formControlName="actors"/>
     </div>
 
-    <div>
+    <div class="mb-2">
       <label for="annotation">Аннотация</label>
       <textarea pInputTextarea id="annotation" formControlName="annotation" rows="3"></textarea>
     </div>
 
-    <div>
+    <div class="mb-2">
       <label for="image">Изображение (URL)</label>
       <input pInputText id="image" formControlName="image"/>
     </div>

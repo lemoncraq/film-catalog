@@ -102,6 +102,28 @@ export function app(): express.Express {
       });
     }
 
+    const { sortField, sortOrder } = req.query;
+
+    if (sortField && typeof sortField === 'string') {
+      const order = (sortOrder === 'desc') ? -1 : 1;
+      result.sort((a, b) => {
+        const aVal = (a as any)[sortField];
+        const bVal = (b as any)[sortField];
+
+        // если оба значения строки
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          return aVal.localeCompare(bVal) * order;
+        }
+
+        // если числа (год)
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return (aVal - bVal) * order;
+        }
+
+        return 0;
+      });
+    }
+
     res.json(result);
   });
 
